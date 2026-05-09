@@ -1,0 +1,49 @@
+
+model:
+  name: "PINNBinary"
+  type: "pinn"
+  hidden_dim: 128
+  num_layers: 3
+  dropout_rate: 0.1
+  activation: "tanh"
+  input_dim: 117
+  n_bus: 39
+  output_dim: 1
+
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  num_epochs: 100
+  early_stopping_patience: 10
+  lambda_physics: 0.1
+  lambda_cls: 1.0
+  optimizer: "adam"
+  scheduler: "reduce_lr_on_plateau"
+  scheduler_patience: 5
+  scheduler_factor: 0.5
+  gradient_clip: 1.0
+
+data:
+  test_size: 0.2
+  random_state: 42
+  val_split: 0.1
+  feature_cols:
+    - "vm_*"
+    - "p_*" 
+    - "q_*"
+  label_col: "label"
+  n_bus: 39
+  baseMVA: 100
+
+physics:
+  enabled: true
+  power_flow_weight: 1.0
+  voltage_bound_weight: 0.1
+  ybus_source: "ieee39_physics.npz"
+
+output:
+  checkpoint_dir: "outputs/checkpoints"
+  log_dir: "outputs/logs"
+  result_dir: "outputs/results"
+  save_best_only: true
+  save_format: "pth"
